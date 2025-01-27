@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Expose local services securely through Termux. Use Tor, Ngrok, and Tmate for NAT bypass and remote access with secure tunneling.">
+    <meta name="keywords" content="Termux, NAT Bypass, Tor, Ngrok, Tmate, Network Access, SSH, Open Source">
+    <meta property="og:title" content="Termux NAT Bypass - Securely Expose Local Servers">
+    <meta property="og:description" content="Expose your local services to the internet securely with Termux. Use Tor, Ngrok, and Tmate for NAT bypass and remote access.">
+    <meta property="og:image" content="https://example.com/preview-image.jpg">
+    <meta property="og:url" content="https://github.com/likhonsheikhcodes/termux-nat-bypass">
+    <meta name="author" content="Likhon Sheikh">
+    <title>Termux NAT Bypass - Expose Local Servers Securely</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9fafb;
+            color: #333;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #3b82f6;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+        }
+
+        .card pre {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .cta-button {
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-align: center;
+            width: fit-content;
+            margin-top: 20px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #2563eb;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="text-center py-10">
+        <h1 class="text-4xl font-bold text-blue-600">Termux NAT Bypass</h1>
+        <p class="text-lg mt-2 text-gray-700">Expose your local servers securely using Tor, Ngrok, and Tmate. Bypass NAT restrictions and gain remote access effortlessly.</p>
+        <a href="https://github.com/likhonsheikhcodes/termux-nat-bypass" target="_blank" class="cta-button mt-4">View on GitHub</a>
+    </header>
+
+    <main class="container mx-auto px-4 py-10">
+
+        <section class="card">
+            <h2 class="section-title">Introduction</h2>
+            <p>Termux NAT Bypass is a toolkit that allows you to expose your local services to the internet, even when you're behind NAT or firewalls. This tool uses powerful utilities like **Tor**, **Ngrok**, and **Tmate** to securely create remote tunnels, allowing you to access your services from anywhere.</p>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Installation</h2>
+            <p>Follow the steps below to set up the Termux NAT Bypass tools:</p>
+            
+            <div class="mb-6">
+                <h3 class="font-bold">Step 1: Clone the Repository</h3>
+                <pre><code>git clone https://github.com/likhonsheikhcodes/termux-nat-bypass.git</code></pre>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="font-bold">Step 2: Install Dependencies</h3>
+                <pre><code>pkg update && pkg upgrade -y</code></pre>
+                <pre><code>pkg install tor openssh tmate proxychains-ng -y</code></pre>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="font-bold">Step 3: Set Up Tor</h3>
+                <p>Configure Tor for Onion services by editing the `torrc` file:</p>
+                <pre><code>nano $PREFIX/etc/tor/torrc</code></pre>
+                <p>Add the following to expose SSH through Tor:</p>
+                <pre><code>
+SOCKSPort 127.0.0.1:9050
+HiddenServiceDir /data/data/com.termux/files/home/.tor/hidden_ssh
+HiddenServicePort 22 127.0.0.1:8022
+                </code></pre>
+                <p>Create the directory for the hidden service:</p>
+                <pre><code>mkdir -p ~/.tor/hidden_ssh</code></pre>
+                <p>Start Tor:</p>
+                <pre><code>tor</code></pre>
+                <p>Your SSH service will be available at the `.onion` address stored in `~/.tor/hidden_ssh/hostname`.</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="font-bold">Step 4: Install Ngrok</h3>
+                <pre><code>wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip</code></pre>
+                <pre><code>unzip ngrok-stable-linux-amd64.zip</code></pre>
+                <pre><code>mv ngrok $PREFIX/bin/</code></pre>
+                <p>Authenticate Ngrok:</p>
+                <pre><code>ngrok authtoken YOUR_AUTH_TOKEN</code></pre>
+                <p>Expose a local service via Ngrok:</p>
+                <pre><code>ngrok tcp 8022</code></pre>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="font-bold">Step 5: Install Tmate</h3>
+                <pre><code>pkg install tmate</code></pre>
+                <p>Start a session with:</p>
+                <pre><code>tmate</code></pre>
+                <p>Share the session link with collaborators to work together remotely.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Likhon Sheikh. All rights reserved. Visit my <a href="https://likhonsheikh.com" target="_blank">website</a> for more projects and updates.</p>
+    </footer>
+
+</body>
+
+</html>
